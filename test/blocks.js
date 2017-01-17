@@ -271,4 +271,72 @@ describe('Blocks', function() {
       blocks.getBlockReward(500000).should.equal(12.5 * 1e8);
     });
   });
+  describe('#getHeaders', function(){
+    describe('/block-headers/:height route', function() {
+      var node = {
+     log: sinon.stub(),
+     services: {
+       bitcoind: {
+         getBlockHeaders: function(height, callback) {
+           callback(null, blockIndexes[height]);
+         }
+       }
+     }
+   };
+      it('should give an array of 25 block headers', function() {
+          var blocks = new BlockController({node: node});
+          var insight = {
+            'blockHash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'
+          };
+          var height = 533974;
+          var req = {
+                  params: {
+                    blockHash: "0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7"
+                  }
+                };
+                var res = {
+                  jsonp: function(data) {
+                    should(data).eql(insight);
+                    done();
+                  }
+                };
+
+                blocks.blockHeaders(req, res);
+      });
+    });
+    describe('/block-headers/:height/:nbOfBlock route', function() {
+      var node = {
+     log: sinon.stub(),
+     services: {
+       bitcoind: {
+         getBlockHeaders: function(height, callback) {
+           callback(null, blockIndexes[height]);
+         }
+       }
+     }
+   };
+      it('should give an array of 50 block headers', function() {
+        var blocks = new BlockController({node: node});
+        var insight = {
+          'blockHash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'
+        };
+        var height = 533974;
+        var req = {
+                params: {
+                  blockHash: "0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7",
+                  nbOfBlocks:50
+                }
+              };
+              var res = {
+                jsonp: function(data) {
+                  should(data).eql(insight);
+                  done();
+                }
+              };
+
+              blocks.blockHeaders(req, res);
+      });
+    });
+  });
+
 });
